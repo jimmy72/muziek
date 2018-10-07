@@ -18,9 +18,11 @@ import javax.persistence.Table;
 public class Artiest implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+	
 	private String naam;
 	
 	@OneToMany(mappedBy = "artiest") 
@@ -44,17 +46,20 @@ public class Artiest implements Serializable{
 	}
 
 	public void setNaam(String naam) {
+		if(naam.trim().isEmpty()) {
+			throw new IllegalArgumentException();
+		}
 		this.naam = naam;
 	}
 	
-	public boolean add(Album album) {
+	public boolean addAlbum(Album album) {
 		if(album == null) {
 			throw new NullPointerException();
 		}
 		boolean added = this.albums.add(album);
 		Artiest vorigeArtiest = album.getArtiest();
 		if(vorigeArtiest != null && vorigeArtiest != this) {
-			vorigeArtiest.remove(album);
+			vorigeArtiest.removeAlbum(album);
 		}
 		if(vorigeArtiest != this) {
 			album.setArtiest(this);
@@ -62,7 +67,7 @@ public class Artiest implements Serializable{
 		return added;
 	}
 	
-	public boolean remove(Album album) {
+	public boolean removeAlbum(Album album) {
 		return this.albums.remove(album);
 	}
 }
