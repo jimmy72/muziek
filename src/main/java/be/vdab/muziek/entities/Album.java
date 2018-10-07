@@ -1,6 +1,7 @@
 package be.vdab.muziek.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -84,6 +85,12 @@ public class Album implements Serializable {
 	
 	public boolean removeTrack(Track track) {
 		return tracks.remove(track);
+	}
+	
+	public BigDecimal getTotalTime() {
+		return getTracks().stream()
+				.map(track -> track.getTijd())
+				.reduce(BigDecimal.ZERO, (vorigeSom, getal) -> vorigeSom.add(getal));
 	}
 
 	@Override
